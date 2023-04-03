@@ -49,7 +49,7 @@ class Parser:
         page.wait_for_load_state('networkidle')
         first_paragraph = page.inner_text('xpath=//td[@id="center-panel"]/p[1]').strip()
         if first_paragraph == LEXICON['bad_answer']:
-            logger.debug(f'Опять двадцатьпять')
+            logger.info(f'Опять двадцатьпять')
         else:
             logger.log('ALERT', 'ЗАПИСЫВАЙСЯ!!!')
             self._save_file(page)

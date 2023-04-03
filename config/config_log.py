@@ -19,5 +19,5 @@ if config.alert:
     logger.level('ALERT', no=39, color="<green>")
     logger.add(send_message_tg, level="ALERT", format='{message}')
 
-logger.info(f'Проект настроен')
+logger.debug(f'Проект настроен')
 
