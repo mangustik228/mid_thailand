@@ -13,3 +13,4 @@ sources/
 *.csv
 test.*
 .env
+data
