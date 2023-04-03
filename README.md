@@ -26,10 +26,7 @@ captcha_token=737c52e19ee31805fbe35aa74e347520
 1. копируем репозиторий `git clone ...`
 2. заходим в папку проекта 
 3. выполняем команду `docker compose build` 
-4. Ставим в файле `config.ini` debug = True
-5. проверяем что все ок: `docker compose up` должно придти сообщение в телеграмм после парсинга
-6. если всё ок: меняем обратно `config.ini` debug = False
-7. Пишем команду `crontab -e` 
+4. Пишем команду `crontab -e` 
     - дописываем в конце файла `*/50 * * * * docker compose -f /path/to/project/docker-compose.yml up -d` 
     - `*/50` указывает чтоб задача запускалась каждые 50минут
 
