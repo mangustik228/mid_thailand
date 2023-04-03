@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  mid_thailand:
+    container_name: mid_thailand
+    build: . 
+    volumes:
+      - ./data:/app/data 
+      - ./logs:/app/logs 
+      - ./config/config.ini:/app/config/config.ini
+    env_file:
+      - .env

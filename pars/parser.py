@@ -52,8 +52,9 @@ class Parser:
             logger.debug(f'Опять двадцатьпять')
         else:
             logger.log('ALERT', 'ЗАПИСЫВАЙСЯ!!!')
-        self._save_file(page)
-
+            self._save_file(page)
+        if config.debug:
+            logger.log('ALERT', 'ok')
 
     def _second_page(self, page: Page):
         logger.debug(f'Перехожу на вторую страницу')

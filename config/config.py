@@ -20,11 +20,6 @@ class Captcha(BaseSettings):
 class Parsing(BaseSettings):
     retries: int = config_ini.getint("PARSING", "retries")
 
-
-class Proxy(BaseSettings):
-    token: int = os.getenv('proxy_token')
-    url: str = os.getenv('proxy_url')
-
 class Logs(BaseSettings):
     sink: str = config_ini.get('LOGS', 'path')
     level: str = config_ini.get('LOGS', 'level')
@@ -36,7 +31,6 @@ class Config(BaseSettings):
     debug: bool = config_ini.getboolean('DEFAULT', 'debug')
     alert: bool = config_ini.getboolean('DEFAULT', 'alert')
     logs: Logs = Logs()
-    proxy: Proxy = Proxy()
     captcha: Captcha = Captcha()
     bot: Bot = Bot()
     parsing: Parsing = Parsing()
