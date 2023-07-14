@@ -1,1 +1,1 @@
-from utils.functions import get_id_and_cd_request
+from utils.functions import *

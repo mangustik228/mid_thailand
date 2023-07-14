@@ -14,3 +14,4 @@ sources/
 test.*
 .env
 data
+test.py

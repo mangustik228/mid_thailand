@@ -1,11 +1,10 @@
 from datetime import datetime
 import os
 from config import config
-from loguru import logger 
+from loguru import logger
 from lexicon import LEXICON
 from playwright.sync_api import sync_playwright, Page
 from mangust228 import CaptchaAi
-
 
 
 class Parser:
@@ -13,15 +12,14 @@ class Parser:
         self.url = f"https://bangkok.kdmid.ru/queue/OrderInfo.aspx?id={id_}&cd={cd}"
 
     def parse_condition(self):
-        with sync_playwright() as pw: 
-            browser = pw.chromium.launch(headless=not config.debug)
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(headless=False)
             context = browser.new_context()
             logger.debug(f'Объект браузера создан')
             page = context.new_page()
             self._parse_page(page)
 
-
-    def _parse_page(self, page: Page, retries:int=config.parsing.retries):
+    def _parse_page(self, page: Page, retries: int = config.parsing.retries):
         response = page.goto(self.url)
         if response != 200 and retries <= 0:
             logger.debug(f'Ответ не 200! ухожу еще на попытку')
@@ -30,7 +28,6 @@ class Parser:
             self._solve_captcha(page)
             self._second_page(page)
             self._check_state(page)
-
 
     @staticmethod
     def _save_file(page: Page):
@@ -42,32 +39,37 @@ class Parser:
             file.write(page.content())
         logger.info(f'Файл записан {full_path}')
 
-
-
     def _check_state(self, page: Page):
         logger.debug(f'Перехожу на заключительную страницу')
         page.wait_for_load_state('networkidle')
-        first_paragraph = page.inner_text('xpath=//td[@id="center-panel"]/p[1]').strip()
-        if first_paragraph == LEXICON['bad_answer']:
-            logger.info(f'Опять двадцатьпять')
-        else:
-            logger.log('ALERT', 'ЗАПИСЫВАЙСЯ!!!')
-            self._save_file(page)
-        if config.debug:
-            logger.log('ALERT', 'ok')
+        try:
+            first_paragraph = page.inner_text(
+                'xpath=//td[@id="center-panel"]/p[1]').strip()
+            if first_paragraph == LEXICON['bad_answer']:
+                logger.info(f'Опять двадцатьпять')
+            else:
+                logger.log('ALERT', 'ЗАПИСЫВАЙСЯ!!!')
+                self._save_file(page)
+            if config.debug:
+                logger.log('ALERT', 'ok')
+        except Exception as e:
+            logger.log("ALERT", "Ошибка, скорее всего можно записаться")
+            logger.info(e)
+            with open('error.html', 'w') as file:
+                file.write(page.content())
 
     def _second_page(self, page: Page):
         logger.debug(f'Перехожу на вторую страницу')
         page.wait_for_load_state('networkidle')
         page.click('xpath=//input[@alt="Записаться в очередь"]')
 
-
     def _solve_captcha(self, page: Page):
         page.wait_for_load_state('networkidle')
         page.wait_for_timeout(1000)
         for _ in range(config.parsing.retries):
             logger.debug(page.url)
-            captcha_dom = page.locator('xpath=(//div[@class="inp"])[last()]/img')
+            captcha_dom = page.locator(
+                'xpath=(//div[@class="inp"])[last()]/img')
             if not captcha_dom.is_visible():
                 logger.debug(f'Капча кажись решена')
                 break
