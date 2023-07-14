@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 
 def get_id_and_cd_request():
-    return 57595, "F7E62EC7"
+    return 61230, "EB458E43"
 
 
 # def get_fake_data():
